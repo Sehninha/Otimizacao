@@ -7,21 +7,15 @@ public class GrahamScan
 {
     public Transform[] CalculateHull(List<Transform> points)
     {
-        List<Transform> convexHull = new List<Transform>();
-
         Transform lowestY = GetLowestY(points);
-        lowestY.GetComponent<SpriteRenderer>().color = Color.blue;
 
         points = points.OrderBy(point => Vector3.Angle(Vector3.right, point.position - lowestY.position)).ToList();
 
-        for (int i = 2; i < points.Count - 2; )
+        for (int i = 2; i < points.Count - 1;)
         {
-            Vector3 firstAngle = points[i].position - points[i - 1].position;
-            Vector3 secondAngle = points[i + 1].position - points[i].position;
+            float ccw = CheckConvex(points[i - 1].position, points[i].position, points[i + 1].position);
 
-            float dot = Vector3.Dot(firstAngle, secondAngle);
-
-            if (dot >= 0)
+            if (ccw >= 0)
             {
                 i++;
             }
@@ -33,6 +27,12 @@ public class GrahamScan
         }
 
         return points.ToArray();
+    }
+
+    private float CheckConvex(Vector3 pointA, Vector3 pointB, Vector3 pointC)
+    {
+        return (pointB.x - pointA.x) * (pointC.y - pointA.y) -
+               (pointB.y - pointA.y) * (pointC.x - pointA.x);
     }
 
     private Transform GetLowestY(List<Transform> points)

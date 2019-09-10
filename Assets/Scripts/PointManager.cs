@@ -76,7 +76,7 @@ public class PointManager : MonoBehaviour
         {
             foreach(GraphEdge edge in edges)
             {
-                Debug.DrawLine(new Vector3((float)edge.x1, (float)edge.x2, 0), new Vector3((float)edge.x2, (float)edge.y2, 0), Color.blue);
+                Debug.DrawLine(new Vector3((float)edge.x1, (float)edge.y1, 0), new Vector3((float)edge.x2, (float)edge.y2, 0), Color.blue);
             }
         }
     }

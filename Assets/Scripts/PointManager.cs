@@ -14,6 +14,7 @@ public class PointManager : MonoBehaviour
 
     private GrahamScan grahamScan;
     private Voronoi voronoi;
+    private Graph graph;
 
     private void Start()
     {
@@ -23,6 +24,7 @@ public class PointManager : MonoBehaviour
 
         grahamScan = new GrahamScan();
         voronoi = new Voronoi(0f);
+        graph = new Graph();
     }
 
     private void Update()
@@ -35,9 +37,8 @@ public class PointManager : MonoBehaviour
             if (CheckPointAvailability(spawnPosition))
             {
                 Instantiate(point, spawnPosition, Quaternion.identity, transform).name = "Point";
-
-                // Reset Colors
-                ResetColors();
+                graph.AddNode(spawnPosition);
+                
 
                 List<Transform> points = GetChildren();
 
@@ -58,6 +59,16 @@ public class PointManager : MonoBehaviour
                 }
 
                 edges = voronoi.generateVoronoi(xPositions.ToArray(), yPositions.ToArray(), -15, 15, -15, 15);
+
+                graph.ClearEdges();
+
+                foreach(GraphEdge edge in edges)
+                {
+                    Vector3 positionA = new Vector3((float)xPositions[edge.site1], (float)yPositions[edge.site1], 0);
+                    Vector3 positionB = new Vector3((float)xPositions[edge.site2], (float)yPositions[edge.site2], 0);
+
+                    Debug.DrawLine(positionA, positionB, Color.blue, 1f);
+                }
             }
         }
 
@@ -72,13 +83,13 @@ public class PointManager : MonoBehaviour
         }
 
         // Draw Edges
-        if (edges != null)
-        {
-            foreach(GraphEdge edge in edges)
-            {
-                Debug.DrawLine(new Vector3((float)edge.x1, (float)edge.y1, 0), new Vector3((float)edge.x2, (float)edge.y2, 0), Color.blue);
-            }
-        }
+        //if (edges != null)
+        //{
+        //    foreach(GraphEdge edge in edges)
+        //    {
+        //        Debug.DrawLine(new Vector3((float)edge.x1, (float)edge.y1, 0), new Vector3((float)edge.x2, (float)edge.y2, 0), Color.blue);
+        //    }
+        //}
     }
 
     private bool CheckPointAvailability(Vector3 point)
@@ -92,14 +103,6 @@ public class PointManager : MonoBehaviour
         }
 
         return true;
-    }
-
-    private void ResetColors()
-    {
-        for(int i = 0; i < transform.childCount; i++)
-        {
-            transform.GetChild(i).GetComponent<SpriteRenderer>().color = Color.black;
-        }
     }
 
     private List<Transform> GetChildren()

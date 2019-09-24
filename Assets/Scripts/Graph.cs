@@ -5,22 +5,28 @@ using Voronoi2;
 
 public class Graph
 {
-    private List<Vector3> nodes;
-    private List<GraphEdge> edges;
+    private List<Transform> nodes;
+    private List<Edge> edges;
 
     public Graph()
     {
-        nodes = new List<Vector3>();
-        edges = new List<GraphEdge>();
+        nodes = new List<Transform>();
+        edges = new List<Edge>();
     }
 
-    public void AddNode(Vector3 position)
+    public void AddNode(Transform point)
     {
-        nodes.Add(position);
+        nodes.Add(point);
     }
-    public void AddEdge(GraphEdge edge)
+
+    public void AddEdge(Edge edge)
     {
         edges.Add(edge);
+    }
+
+    public Edge[] GetEdges()
+    {
+        return edges.ToArray();
     }
 
     public void ClearEdges()

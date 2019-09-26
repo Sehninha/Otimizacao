@@ -24,6 +24,11 @@ public class Graph
         edges.Add(edge);
     }
 
+    public Transform[] GetNodes()
+    {
+        return nodes.ToArray();
+    }
+
     public Edge[] GetEdges()
     {
         return edges.ToArray();

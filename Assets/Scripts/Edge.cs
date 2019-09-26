@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Edge
 {
-    public Transform nodeA;
-    public Transform nodeB;
+    public Node nodeA;
+    public Node nodeB;
 
-    public Edge(Transform nodeA, Transform nodeB)
+    public Edge(Node nodeA, Node nodeB)
     {
         this.nodeA = nodeA;
         this.nodeB = nodeB;

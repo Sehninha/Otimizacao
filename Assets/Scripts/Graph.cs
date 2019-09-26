@@ -5,16 +5,16 @@ using Voronoi2;
 
 public class Graph
 {
-    private List<Transform> nodes;
+    private List<Node> nodes;
     private List<Edge> edges;
 
     public Graph()
     {
-        nodes = new List<Transform>();
+        nodes = new List<Node>();
         edges = new List<Edge>();
     }
 
-    public void AddNode(Transform point)
+    public void AddNode(Node point)
     {
         nodes.Add(point);
     }
@@ -24,7 +24,7 @@ public class Graph
         edges.Add(edge);
     }
 
-    public Transform[] GetNodes()
+    public Node[] GetNodes()
     {
         return nodes.ToArray();
     }
@@ -32,6 +32,19 @@ public class Graph
     public Edge[] GetEdges()
     {
         return edges.ToArray();
+    }
+
+    public Node FindNode(Transform transform)
+    {
+        foreach (Node node in nodes)
+        {
+            if (node.transform == transform)
+            {
+                return node;
+            }
+        }
+
+        return null;
     }
 
     public void ClearEdges()

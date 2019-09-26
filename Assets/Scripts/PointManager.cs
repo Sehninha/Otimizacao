@@ -47,7 +47,7 @@ public class PointManager : MonoBehaviour
         {
             GameObject newPoint = Instantiate(point, spawnPosition, Quaternion.identity, transform);
             newPoint.name = "Point";
-            graph.AddNode(newPoint.transform);
+            graph.AddNode(new Node(newPoint.transform));
 
             List<Transform> points = GetChildren();
 
@@ -77,7 +77,8 @@ public class PointManager : MonoBehaviour
                 Transform pointA = points[edge.site1];
                 Transform pointB = points[edge.site2];
 
-                graph.AddEdge(new Edge(pointA, pointB));
+                graph.AddEdge(new Edge(graph.FindNode(pointA),
+                                       graph.FindNode(pointB)));
             }
 
             UpdateEdges();
@@ -107,7 +108,7 @@ public class PointManager : MonoBehaviour
 
         foreach (Edge edge in edges)
         {
-            if (BelongsToHull(edge.nodeA) && BelongsToHull(edge.nodeB))
+            if (BelongsToHull(edge.nodeA.transform) && BelongsToHull(edge.nodeB.transform))
             {
                 continue;
             }
@@ -124,8 +125,8 @@ public class PointManager : MonoBehaviour
             line.positionCount = 2;
             line.SetPositions(new Vector3[]
             {
-                edge.nodeA.position,
-                edge.nodeB.position
+                edge.nodeA.transform.position,
+                edge.nodeB.transform.position
             });
         }
     }

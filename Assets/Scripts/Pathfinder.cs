@@ -4,54 +4,61 @@ using UnityEngine;
 
 public class Pathfinder
 {
-    private Transform begin, end;
-    private List<Transform> nodesOnHold, examinedNodes;
-    private Transform[] nodes;
+    private Node begin, end;
+    private List<Node> nodesOnHold, examinedNodes;
+    private Node[] nodes;
     private Edge[] edges;
 
-    public Edge[] CalculatePath(Graph graph, Transform begin, Transform end)
+    public Edge[] CalculatePath(Graph graph, Node begin, Node end)
     {
         nodes = graph.GetNodes();
         edges = graph.GetEdges();
 
+        ResetNodes();
+
         this.begin = begin;
         this.end = end;
 
-        nodesOnHold = new List<Transform>();
-        examinedNodes = new List<Transform>();
+        nodesOnHold = new List<Node>();
+        examinedNodes = new List<Node>();
 
         nodesOnHold.Add(begin);
         examinedNodes.Add(begin);
     }
 
     //Examina os nodos e analisar qual tem a menor heuristica
-    public void Examine(Transform currentNode)
+    public Edge[] Examine(Node currentNode)
     {
-        if(currentNode = end)
+        if(currentNode == end)
         {
-            return;
+            return ;
         }
        
         nodesOnHold.Remove(currentNode);
-       
-        Transform[] adjacencies = CheckAdjacencies(currentNode);
 
-        foreach(Transform adjacency in adjacencies)
+        Node[] adjacencies = CheckAdjacencies(currentNode);
+
+        foreach(Node adjacency in adjacencies)
         {
-            if (!examinedNodes.Find( item => adjacency == item ))
+            if (examinedNodes.Find(item => adjacency == item) == null)
             {
                 nodesOnHold.Add(adjacency);
                 examinedNodes.Add(adjacency);
+
+                adjacency.parent = currentNode;
+                adjacency.distance = Mathf.Abs(adjacency.transform.position.x - end.transform.position.x) +
+                                     Mathf.Abs(adjacency.transform.position.y - end.transform.position.y);
+                adjacency.cost = currentNode.cost + 1;
             }
         }
 
-        Examine(CalculateNextNode());
+        return Examine(CalculateNextNode());
     }
 
     //passa um nodo para funçao, a função vai analisar todas as edges, e as edges que conterem esse nodo vão retornar o próximo nodo
-    public Transform[] CheckAdjacencies(Transform node)
+    public Node[] CheckAdjacencies(Node node)
     {
-        List<Transform> adjacencies = new List<Transform>();
+        List<Node> adjacencies = new List<Node>();
 
         foreach(Edge edge in edges)
         {
@@ -70,14 +77,14 @@ public class Pathfinder
 
 
     //Cuida de analisa e retornar sempre o nodo de menor heristica
-    public Transform CalculateNextNode()
+    public Node CalculateNextNode()
     {
         float smallestHeuristic = Mathf.Infinity;
-        Transform smallestHeuristicNode = begin;
+        Node smallestHeuristicNode = begin;
 
-        foreach (Transform node in nodesOnHold)
+        foreach (Node node in nodesOnHold)
         {
-            float heuristic = Vector3.Distance(node.position, begin.position) + Vector3.Distance(node.position, end.position);
+            float heuristic = node.value;
 
             if(heuristic < smallestHeuristic)
             {
@@ -89,4 +96,31 @@ public class Pathfinder
         return smallestHeuristicNode;
     }
 
+    private Edge[] GetPath()
+    {
+        Node current = end;
+        Node parent = end.parent;
+    }
+
+    private Edge GetEdge(Node nodeA, Node nodeB)
+    {
+        foreach (Edge edge in edges)
+        {
+            if ((nodeA == edge.nodeA && nodeB == edge.nodeB) ||
+                 nodeA == edge.nodeB && nodeB == edge.nodeA)
+            {
+                return edge;
+            }
+        }
+
+        return null;
+    }
+
+    private void ResetNodes()
+    {
+        foreach (Node node in nodes)
+        {
+            node.cost = 1;
+        }
+    }
 }

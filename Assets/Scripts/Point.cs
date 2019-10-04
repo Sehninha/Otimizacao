@@ -10,6 +10,9 @@ public class Point : MonoBehaviour, IPointerClickHandler
     
     public void OnPointerClick(PointerEventData data)
     {
-
+        if (manager.mode == Mode.Select)
+        {
+            manager.SelectPoint(transform);
+        }
     }
 }

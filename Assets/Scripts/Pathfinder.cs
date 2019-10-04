@@ -28,7 +28,7 @@ public class Pathfinder
         return Examine(begin);
     }
 
-    //Examina os nodos e analisar qual tem a menor heuristica
+    //Examina os nodos e analisa qual tem a menor heuristica
     public Edge[] Examine(Node currentNode)
     {
         if (currentNode == end)
@@ -48,8 +48,8 @@ public class Pathfinder
                 examinedNodes.Add(adjacency);
 
                 adjacency.parent = currentNode;
-                adjacency.distance = Mathf.Abs(adjacency.transform.position.x - end.transform.position.x) +
-                                     Mathf.Abs(adjacency.transform.position.y - end.transform.position.y);
+                adjacency.distance = Mathf.Pow(adjacency.transform.position.x - end.transform.position.x, 2) +
+                                     Mathf.Pow(adjacency.transform.position.y - end.transform.position.y, 2);
                 adjacency.cost = currentNode.cost + 1;
             }
         }

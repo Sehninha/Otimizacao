@@ -24,21 +24,23 @@ public class Pathfinder
 
         nodesOnHold.Add(begin);
         examinedNodes.Add(begin);
+
+        return Examine(begin);
     }
 
     //Examina os nodos e analisar qual tem a menor heuristica
     public Edge[] Examine(Node currentNode)
     {
-        if(currentNode == end)
+        if (currentNode == end)
         {
-            return ;
+            return GetPath();
         }
-       
+
         nodesOnHold.Remove(currentNode);
 
         Node[] adjacencies = CheckAdjacencies(currentNode);
 
-        foreach(Node adjacency in adjacencies)
+        foreach (Node adjacency in adjacencies)
         {
             if (examinedNodes.Find(item => adjacency == item) == null)
             {
@@ -51,7 +53,6 @@ public class Pathfinder
                 adjacency.cost = currentNode.cost + 1;
             }
         }
-
         return Examine(CalculateNextNode());
     }
 
@@ -60,7 +61,7 @@ public class Pathfinder
     {
         List<Node> adjacencies = new List<Node>();
 
-        foreach(Edge edge in edges)
+        foreach (Edge edge in edges)
         {
             if (node == edge.nodeA)
             {
@@ -86,7 +87,7 @@ public class Pathfinder
         {
             float heuristic = node.value;
 
-            if(heuristic < smallestHeuristic)
+            if (heuristic < smallestHeuristic)
             {
                 smallestHeuristic = heuristic;
                 smallestHeuristicNode = node;
@@ -100,14 +101,27 @@ public class Pathfinder
     {
         Node current = end;
         Node parent = end.parent;
+
+        List<Edge> path = new List<Edge>();
+
+        while (current != begin)
+        {
+            path.Add(GetEdge(current, parent));
+
+            current = parent;
+            parent = current.parent;
+        }
+
+        return path.ToArray();
+
     }
 
+    //Retorna a edge entre dois nodos
     private Edge GetEdge(Node nodeA, Node nodeB)
     {
         foreach (Edge edge in edges)
         {
-            if ((nodeA == edge.nodeA && nodeB == edge.nodeB) ||
-                 nodeA == edge.nodeB && nodeB == edge.nodeA)
+            if ((nodeA == edge.nodeA && nodeB == edge.nodeB) || (nodeA == edge.nodeB && nodeB == edge.nodeA))
             {
                 return edge;
             }

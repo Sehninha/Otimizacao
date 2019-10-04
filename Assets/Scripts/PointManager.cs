@@ -11,6 +11,7 @@ public class PointManager : MonoBehaviour
     private new Camera camera;
     private LineRenderer hullLine;
     private Transform graphLines;
+    private LineRenderer pathLine;
 
     private Transform[] hull;
     private Graph graph;
@@ -22,8 +23,9 @@ public class PointManager : MonoBehaviour
         point = Resources.Load<GameObject>("Prefabs/Point");
 
         camera = Camera.main;
-        hullLine = FindObjectOfType<LineRenderer>();
+        hullLine = GameObject.Find("Hull Line").GetComponent<LineRenderer>();
         graphLines = GameObject.Find("Graph Lines").transform;
+        pathLine = GameObject.Find("Path Line").GetComponent<LineRenderer>();
 
         graph = new Graph();
         grahamScan = new GrahamScan();
@@ -47,8 +49,9 @@ public class PointManager : MonoBehaviour
         {
             GameObject newPoint = Instantiate(point, spawnPosition, Quaternion.identity, transform);
             newPoint.name = "Point";
+            newPoint.GetComponent<Point>().manager = this;
             graph.AddNode(new Node(newPoint.transform));
-
+            
             List<Transform> points = GetChildren();
 
             // Calculate Hull
